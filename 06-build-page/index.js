@@ -23,19 +23,18 @@ fs.mkdir(outputPath, (err) => {
     }
   } else {
     console.log("project-dist directory created");
-  }
-})
-
-// create assets directory
-fs.mkdir(assetsOutputPath, (err) => {
-  if (err) {
-    if(err.errno === -17) {
-      console.log("assets folder already exists, skipping this step")
-    } else {
-      throw err;
-    }
-  } else {
-    console.log("assets directory created");
+    // create assets directory
+    fs.mkdir(assetsOutputPath, (err) => {
+      if (err) {
+        if(err.errno === -17) {
+          console.log("assets folder already exists, skipping this step")
+        } else {
+          throw err;
+        }
+      } else {
+        console.log("assets directory created");
+      }
+    })
   }
 })
 
