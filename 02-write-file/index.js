@@ -12,9 +12,8 @@ stdin.on("data", (data) => {
   if(input === "exit") {
     process.exit();
   } else {
-    fs.writeFile(path.join(__dirname, "text.txt"), input, (error) => {
+    fs.appendFile(path.join(__dirname, "text.txt"), input, (error) => {
       if (error) throw error;
-      process.exit();
     });
   }
 });
