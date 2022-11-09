@@ -14,7 +14,7 @@ const makeDirectory = (filePath) => {
   return new Promise(resolve => {
     fs.mkdir(filePath,  (err) => {
       if (err) {
-        if(err.errno === -17) {
+        if(err.errno === -17 || err.errno === -4075) {
           console.log("folder already exists, deleting the old contents");
           fs.readdir(filePath,  (err, files) => {
             for (let file of files) {
