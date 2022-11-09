@@ -66,7 +66,7 @@ fs.readdir(assetsInputPath, (err, directories) => {
   directories.forEach(directory => {
     fs.mkdir(path.join(assetsOutputPath, directory), (err) => {
       if (err) {
-        if(err.errno === -17) {
+        if(err.errno === -17 || err.errno === -4075) {
           console.log(`${path.join(assetsOutputPath, directory)} folder already exists, skipping this step`)
         } else {
           throw err;
