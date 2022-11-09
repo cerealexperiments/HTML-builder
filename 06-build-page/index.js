@@ -16,7 +16,7 @@ const htmlOutputPath = path.join(outputPath, "index.html");
 // create project-dist directory
 fs.mkdir(outputPath, (err) => {
   if (err) {
-    if(err.errno === -17) {
+    if(err.errno === -17 || err.errno === -4075) {
       console.log("folder already exists, skipping this step")
     } else {
       throw err;
@@ -26,7 +26,7 @@ fs.mkdir(outputPath, (err) => {
     // create assets directory
     fs.mkdir(assetsOutputPath, (err) => {
       if (err) {
-        if(err.errno === -17) {
+        if(err.errno === -17 || err.errno === -4075) {
           console.log("assets folder already exists, skipping this step")
         } else {
           throw err;
