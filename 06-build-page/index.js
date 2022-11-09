@@ -86,28 +86,33 @@ fs.readdir(assetsInputPath, (err, directories) => {
 })
 
 //bundle html
-
 fs.copyFile(htmlInputPath, htmlOutputPath, (err) => {
   if(err) throw err;
   fs.readFile(htmlOutputPath, async (err, data) => {
     if(err) throw err;
-    const header = await getFileContents(path.join(htmlComponentsPath, "header.html"))
-    const articles = await getFileContents(path.join(htmlComponentsPath, "articles.html"))
-    const footer = await getFileContents(path.join(htmlComponentsPath, "footer.html"))
-    let result = data.toString().replace(/{{header}}/g, header);
-    result = result.replace(/{{articles}}/g, articles);
-    result = result.replace(/{{footer}}/g, footer);
-
-    fs.writeFile(htmlOutputPath, result, (err) => {
+    let finalHtml = "";
+    const lines = data.toString().split("\n");
+    for (const line of lines) {
+      if(line.match(/{{.*?}}/g)) {
+        const templateName = line.trim().substring(2, line.trim().length - 2);
+        const templateContents = await getFileContents(path.join(htmlComponentsPath, `${templateName}.html`))
+        finalHtml += `${templateContents}\n`;
+      } else {
+        finalHtml += `${line}\n`;
+      }
+    }
+    fs.writeFile(htmlOutputPath, finalHtml, (err) => {
       if(err) throw err;
-      console.log("header appended")
+      console.log("html bundled")
     })
   })
 })
 
+
 const getFileContents = async (filePath) => {
   return await readFile(filePath);
 }
+
 
 const readFile = (filePath) => {
   return new Promise(resolve => {
