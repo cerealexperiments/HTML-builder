@@ -14,13 +14,17 @@ fs.promises.mkdir(outputPath, {recursive: true}).then(async () => {
     }
   }
   fs.promises.readdir(inputPath).then((files) => {
-    files.forEach(fileName => {
-      let inputFilePath = path.join(inputPath, fileName);
-      let outputFilePath = path.join(outputPath, fileName);
-      fs.promises.copyFile(inputFilePath, outputFilePath).then(() => {
-          console.log(`${fileName} copied`);
-        }
-      )
+    files.forEach(async fileName => {
+      const stat = await fs.promises.stat(path.join(inputPath, fileName));
+      console.log(stat.isDirectory());
+      if(!stat.isDirectory()) {
+        let inputFilePath = path.join(inputPath, fileName);
+        let outputFilePath = path.join(outputPath, fileName);
+        fs.promises.copyFile(inputFilePath, outputFilePath).then(() => {
+            console.log(`${fileName} copied`);
+          }
+        )
+      }
     })
   })
 })
