@@ -14,29 +14,13 @@ const htmlInputPath = path.join(__dirname, "template.html");
 const htmlOutputPath = path.join(outputPath, "index.html");
 
 // create project-dist directory
-fs.mkdir(outputPath, (err) => {
-  if (err) {
-    if(err.errno === -17 || err.errno === -4075) {
-      console.log("folder already exists, skipping this step")
-    } else {
-      throw err;
-    }
-  } else {
+fs.promises.mkdir(outputPath, {recursive: true}).then(() => {
     console.log("project-dist directory created");
-    // create assets directory
-    fs.mkdir(assetsOutputPath, (err) => {
-      if (err) {
-        if(err.errno === -17 || err.errno === -4075) {
-          console.log("assets folder already exists, skipping this step")
-        } else {
-          throw err;
-        }
-      } else {
-        console.log("assets directory created");
-      }
+    fs.promises.mkdir(assetsOutputPath, {recursive: true}).then(() => {
+      console.log("assets directory created");
     })
   }
-})
+)
 
 // bundle css styles
 fs.writeFile(path.join(stylesOutputPath, "style.css"), "", (err) => {
@@ -63,18 +47,9 @@ fs.readdir(stylesInputPath, (err, files) => {
 
 // copy assets
 fs.readdir(assetsInputPath, (err, directories) => {
-  directories.forEach(directory => {
-    fs.mkdir(path.join(assetsOutputPath, directory), (err) => {
-      if (err) {
-        if(err.errno === -17 || err.errno === -4075) {
-          console.log(`${path.join(assetsOutputPath, directory)} folder already exists, skipping this step`)
-        } else {
-          throw err;
-        }
-      } else {
-        console.log("assets directory created");
-      }
-    })
+  directories.forEach(async directory => {
+    await fs.promises.mkdir(path.join(assetsOutputPath, directory), {recursive: true});
+    console.log(`${directory} assets copied`)
     fs.readdir(path.join(assetsInputPath, directory), (err, files) => {
       files.forEach(file => {
         fs.copyFile(path.join(assetsInputPath, directory, file), path.join(assetsOutputPath, directory, file), (err) => {
